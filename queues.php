@@ -3,7 +3,7 @@
  * Plugin Name: Queues
  * Description: Simple unified backend ticketing & knowledgebase system for WordPress
  * Version: 1.11
- * Author: Your Name
+ * Author: Marius
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -110,38 +110,17 @@ class Queues_Plugin {
 
     public function register_menus() {
         // Top-level
-        add_menu_page(
-            'Queues',
-            'Queues',
-            'manage_options',
-            'queues_tickets',
-            [ $this, 'page_tickets' ],
-            'dashicons-tickets',
-            6
-        );
+        add_menu_page( 'Queues', 'Queues', 'manage_options', 'queues_tickets', [$this, 'page_tickets'], 'dashicons-tickets', 6 );
         $base = 'queues_tickets';
 
         // Core
         add_submenu_page( $base, 'Tickets', 'Tickets', 'manage_options', 'queues_tickets', [ $this, 'page_tickets' ] );
         add_submenu_page( $base, 'Chat',    'Chat',    'manage_options', 'queues_chat',    [ $this, 'page_chat' ] );
-
-        // Knowledgebase (un singur submenu)
-        add_submenu_page(
-            $base,
-            'Knowledgebase',
-            'Knowledgebase',
-            'manage_options',
-            'queues_knowledgebase',
-            [ $this, 'page_knowledgebase' ]
-        );
-
-        // Restul meniurilor...
+        add_submenu_page( $base, 'Knowledgebase', 'Knowledgebase', 'manage_options', 'queues_knowledgebase', [ $this, 'page_knowledgebase' ] );
         add_submenu_page( $base, 'Help Topics',       'Help Topics',       'manage_options', 'queues_help_topics',       [ $this, 'page_help_topics' ] );
         add_submenu_page( $base, 'Canned Responses',  'Canned Responses',  'manage_options', 'queues_canned',            [ $this, 'page_canned' ] );
         add_submenu_page( $base, 'Report Categories', 'Report Categories', 'manage_options', 'queues_report_categories', [ $this, 'page_report_categories' ] );
         add_submenu_page( $base, 'Custom Fields',     'Custom Fields',     'manage_options', 'queues_fields',            [ $this, 'page_fields' ] );
-
-        // Configurații
         add_submenu_page( $base, 'Categories',    'Categories',    'manage_options', 'queues_categories',    [ $this, 'page_categories' ] );
         add_submenu_page( $base, 'Statuses',      'Statuses',      'manage_options', 'queues_statuses',      [ $this, 'page_statuses' ] );
         add_submenu_page( $base, 'Priorities',    'Priorities',    'manage_options', 'queues_priorities',    [ $this, 'page_priorities' ] );
