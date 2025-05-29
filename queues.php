@@ -76,7 +76,7 @@ class Queues_Plugin {
             if ( $action === 'delete' && $id )               { $wpdb->delete( $cat_table, [ 'id' => $id ] ); }
             wp_safe_redirect( admin_url( 'admin.php?page=queues_knowledgebase' ) );
             exit;
-        }g
+        }
 
         // — Articole
         if ( isset( $_POST['kb_art_action'] ) ) {
