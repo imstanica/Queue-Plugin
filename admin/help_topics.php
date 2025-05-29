@@ -17,8 +17,9 @@ $table_name = $wpdb->prefix . 'queues_help_topics';
 if ( isset( $_POST['add_help_topic'] ) ) {
     check_admin_referer( 'add_help_topic_nonce' );
     $topic = sanitize_text_field( $_POST['name'] );
+    $type  = $_POST['type'] === 'request' ? 'request' : 'incident';
     if ( ! empty( $topic ) ) {
-        $wpdb->insert( $table_name, [ 'topic' => $topic ] );
+        $wpdb->insert( $table_name, [ 'topic' => $topic, 'type' => $type ] );
     }
 }
 
@@ -27,8 +28,9 @@ if ( isset( $_POST['update_help_topic'] ) ) {
     check_admin_referer( 'update_help_topic_nonce' );
     $id    = intval( $_POST['help_topic_id'] );
     $topic = sanitize_text_field( $_POST['name'] );
+    $type  = $_POST['type'] === 'request' ? 'request' : 'incident';
     if ( $id && ! empty( $topic ) ) {
-        $wpdb->update( $table_name, [ 'topic' => $topic ], [ 'id' => $id ] );
+        $wpdb->update( $table_name, [ 'topic' => $topic, 'type' => $type ], [ 'id' => $id ] );
     }
 }
 
@@ -54,6 +56,15 @@ $items = $wpdb->get_results( "SELECT * FROM {$table_name} ORDER BY id ASC" );
                 <th scope="row"><label for="name"><?php esc_html_e( 'Topic', 'queues' ); ?></label></th>
                 <td><input name="name" id="name" type="text" class="regular-text" required></td>
             </tr>
+            <tr>
+                <th scope="row"><label for="type"><?php esc_html_e( 'Type', 'queues' ); ?></label></th>
+                <td>
+                    <select name="type" id="type" required>
+                        <option value="incident">Incident</option>
+                        <option value="request">Request</option>
+                    </select>
+                </td>
+            </tr>
         </table>
         <?php submit_button( __( 'Add Help Topic', 'queues' ), 'primary', 'add_help_topic' ); ?>
     </form>
@@ -64,6 +75,7 @@ $items = $wpdb->get_results( "SELECT * FROM {$table_name} ORDER BY id ASC" );
             <tr>
                 <th><?php esc_html_e( 'ID', 'queues' ); ?></th>
                 <th><?php esc_html_e( 'Topic', 'queues' ); ?></th>
+                <th><?php esc_html_e( 'Type', 'queues' ); ?></th>
                 <th><?php esc_html_e( 'Actions', 'queues' ); ?></th>
             </tr>
         </thead>
@@ -83,6 +95,10 @@ $items = $wpdb->get_results( "SELECT * FROM {$table_name} ORDER BY id ASC" );
                                 <?php wp_nonce_field( 'update_help_topic_nonce' ); ?>
                                 <input type="hidden" name="help_topic_id" value="<?php echo esc_attr( $item->id ); ?>">
                                 <input name="name" type="text" value="<?php echo esc_attr( $item->topic ); ?>" required>
+                                <select name="type" required>
+                                    <option value="incident" <?php selected( $item->type, 'incident' ); ?>>Incident</option>
+                                    <option value="request" <?php selected( $item->type, 'request' ); ?>>Request</option>
+                                </select>
                                 <?php submit_button( __( 'Save', 'queues' ), 'small', 'update_help_topic', false ); ?>
                                 <a href="<?php echo esc_url( admin_url( 'admin.php?page=queues_help_topics' ) ); ?>" class="button">
                                     <?php esc_html_e( 'Cancel', 'queues' ); ?>
@@ -92,6 +108,7 @@ $items = $wpdb->get_results( "SELECT * FROM {$table_name} ORDER BY id ASC" );
                             <?php echo esc_html( $item->topic ); ?>
                         <?php endif; ?>
                     </td>
+                    <td><?php echo esc_html( ucfirst( $item->type ) ); ?></td>
                     <td>
                         <?php if ( ! $edit_mode ) : ?>
                             <a href="<?php
@@ -122,7 +139,7 @@ $items = $wpdb->get_results( "SELECT * FROM {$table_name} ORDER BY id ASC" );
 
             <?php if ( empty( $items ) ) : ?>
                 <tr>
-                    <td colspan="3"><?php esc_html_e( 'No help topics found.', 'queues' ); ?></td>
+                    <td colspan="4"><?php esc_html_e( 'No help topics found.', 'queues' ); ?></td>
                 </tr>
             <?php endif; ?>
         </tbody>

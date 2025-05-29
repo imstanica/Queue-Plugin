@@ -5,7 +5,7 @@
  */
 class Queues_Installer {
     // Bump this when schema changes
-    const DB_VERSION = '1.25';
+    const DB_VERSION = '1.26';
 
     /**
      * Run on plugin activation: create/update all necessary tables.
@@ -98,10 +98,11 @@ class Queues_Installer {
 
             // 9. Help Topics
             "CREATE TABLE IF NOT EXISTS `{$p}queues_help_topics` (
-                `id`    BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `topic` VARCHAR(255)        NOT NULL,
+                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `topic` VARCHAR(255) NOT NULL,
+                `type` ENUM('incident','request') NOT NULL DEFAULT 'incident',
                 PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB {$charset}",
+            ) ENGINE=InnoDB {$charset};",
 
             // 10. Custom Fields
             "CREATE TABLE IF NOT EXISTS `{$p}queues_fields` (
