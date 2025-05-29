@@ -90,7 +90,7 @@ $orgs = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY id ASC" );
             <tr>
                 <th scope="row"><label for="manager_id"><?php esc_html_e( 'Manager', 'queues' ); ?></label></th>
                 <td>
-                    <select name="manager_id" id="manager_id">
+                    <select name="manager_id" id="manager_id" style="width: 300px;">
                         <option value=""><?php esc_html_e( '— None —', 'queues' ); ?></option>
                         <?php foreach ( $managers as $m ) : ?>
                             <option value="<?php echo esc_attr( $m->id ); ?>">
@@ -206,3 +206,22 @@ $orgs = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY id ASC" );
         </tbody>
     </table>
 </div>
+<!-- Select2 for Manager dropdown -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+jQuery(document).ready(function($) {
+    $('#manager_id').select2({
+        placeholder: "<?php esc_attr_e( 'Search manager...', 'queues' ); ?>",
+        width: 'resolve'
+    });
+
+    // Apply select2 on edit rows as well
+    <?php foreach ( $orgs as $org ) : ?>
+        $('#manager_id_<?php echo esc_js( $org->id ); ?>').select2({
+            placeholder: "<?php esc_attr_e( 'Search manager...', 'queues' ); ?>",
+            width: 'resolve'
+        });
+    <?php endforeach; ?>
+});
+</script>

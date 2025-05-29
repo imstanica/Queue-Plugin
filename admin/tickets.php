@@ -108,37 +108,53 @@ if ( isset( $_POST['create_ticket_nonce'] )
               <tr>
                 <th scope="row"><label for="category_id">Category</label></th>
                 <td>
-                  <select name="category_id" id="category_id">
-                    <?php foreach ( get_all_categories() as $c ) : ?>
-                      <option value="<?php echo esc_attr( $c->id ); ?>" <?php selected( $ticket->category_id, $c->id ); ?>>
-                        <?php echo esc_html( $c->name ); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  </select>
+                <select name="category_id" id="category_id" class="select2" style="width: 100%;">
+                  <?php
+                    foreach ( get_all_categories() as $cat ) {
+                      printf(
+                        '<option value="%d"%s>%s</option>',
+                        esc_attr( $cat->id ),
+                        selected( $ticket->category_id, $cat->id, false ),
+                        esc_html( $cat->name )
+                      );
+                    }
+                  ?>
+                </select>
                 </td>
               </tr>
               <tr>
                 <th scope="row"><label for="status_id">Status</label></th>
                 <td>
-                  <select name="status_id" id="status_id">
-                    <?php foreach ( get_all_statuses() as $s ) : ?>
-                      <option value="<?php echo esc_attr( $s->id ); ?>" <?php selected( $ticket->status_id, $s->id ); ?>>
-                        <?php echo esc_html( $s->name ); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  </select>
+                <select name="status_id" id="status_id" class="select2" style="width: 100%;">
+                  <?php
+                    $statuses = get_all_statuses();
+                    foreach ( $statuses as $status ) {
+                      printf(
+                        '<option value="%d"%s>%s</option>',
+                        esc_attr( $status->id ),
+                        selected( $ticket->status_id, $status->id, false ),
+                        esc_html( $status->name )
+                      );
+                    }
+                  ?>
+                </select>
                 </td>
               </tr>
               <tr>
                 <th scope="row"><label for="priority_id">Priority</label></th>
                 <td>
-                  <select name="priority_id" id="priority_id">
-                    <?php foreach ( get_all_priorities() as $p ) : ?>
-                      <option value="<?php echo esc_attr( $p->id ); ?>" <?php selected( $ticket->priority_id, $p->id ); ?>>
-                        <?php echo esc_html( $p->name ); ?>
-                      </option>
-                    <?php endforeach; ?>
-                  </select>
+                <select name="priority_id" id="priority_id" class="select2" style="width: 100%;">
+                  <?php
+                    foreach ( get_all_priorities() as $prio ) {
+                      printf(
+                        '<option value="%d"%s>%s</option>',
+                        esc_attr( $prio->id ),
+                        selected( $ticket->priority_id, $prio->id, false ),
+                        esc_html( $prio->name )
+                      );
+                    }
+                  ?>
+                </select>
                 </td>
               </tr>
               <tr>
@@ -248,46 +264,62 @@ if ( isset( $_POST['create_ticket_nonce'] )
                   <tr>
                     <th scope="row"><label for="new_category_id">Category</label></th>
                     <td>
-                      <select name="new_category_id" id="new_category_id">
+                      <select name="new_category_id" id="new_category_id" class="select2" style="width: 100%;" data-placeholder="Select category…" required>
+                        <option value="" selected disabled hidden></option>
                         <?php foreach ( get_all_categories() as $c ) : ?>
                           <option value="<?php echo esc_attr( $c->id ); ?>"><?php echo esc_html( $c->name ); ?></option>
                         <?php endforeach; ?>
                       </select>
                     </td>
                   </tr>
+
                   <tr>
                     <th scope="row"><label for="new_status_id">Status</label></th>
                     <td>
-                      <select name="new_status_id" id="new_status_id">
-                        <?php foreach ( get_all_statuses() as $s ) : ?>
-                          <option value="<?php echo esc_attr( $s->id ); ?>"><?php echo esc_html( $s->name ); ?></option>
-                        <?php endforeach; ?>
+                      <select name="new_status_id" id="new_status_id" class="select2" style="width: 100%;" data-placeholder="Select status…" required>
+                        <option value="" selected disabled hidden></option>
+                        <?php
+                          foreach ( get_all_statuses() as $s ) {
+                            printf(
+                              '<option value="%d">%s</option>',
+                              esc_attr( $s->id ),
+                              esc_html( $s->name )
+                            );
+                          }
+                        ?>
                       </select>
                     </td>
                   </tr>
+
                   <tr>
                     <th scope="row"><label for="new_priority_id">Priority</label></th>
                     <td>
-                      <select name="new_priority_id" id="new_priority_id">
+                      <select name="new_priority_id" id="new_priority_id" class="select2" style="width: 100%;" data-placeholder="Select priority…" required>
+                        <option value="" selected disabled hidden></option>
                         <?php foreach ( get_all_priorities() as $p ) : ?>
                           <option value="<?php echo esc_attr( $p->id ); ?>"><?php echo esc_html( $p->name ); ?></option>
                         <?php endforeach; ?>
                       </select>
                     </td>
                   </tr>
+
                   <tr>
-                    <th scope="row"><label for="new_user_id">Opened for (User)</label></th>
+                    <th scope="row"><label for="new_user_id">Open for</label></th>
                     <td>
-                      <select name="new_user_id" id="new_user_id">
+                      <select name="new_user_id" id="new_user_id" class="select2" style="width: 100%;" data-placeholder="Search user…" required>
+                        <option value="" selected disabled hidden></option>
                         <?php
                         $users = $wpdb->get_results(
                           "SELECT u.wp_user_id AS wp_user_id, w.display_name
-                           FROM {$wpdb->prefix}queues_users u
-                           JOIN {$wpdb->users}       w ON u.wp_user_id = w.ID
-                           ORDER BY w.display_name"
+                          FROM {$wpdb->prefix}queues_users u
+                          JOIN {$wpdb->users}       w ON u.wp_user_id = w.ID
+                          ORDER BY w.display_name"
                         );
-                        foreach ( $users as $u ) : ?>
-                          <option value="<?php echo esc_attr( $u->wp_user_id ); ?>"><?php echo esc_html( $u->display_name ); ?></option>
+                        foreach ( $users as $u ) :
+                        ?>
+                          <option value="<?php echo esc_attr( $u->wp_user_id ); ?>">
+                            <?php echo esc_html( $u->display_name ); ?>
+                          </option>
                         <?php endforeach; ?>
                       </select>
                     </td>
@@ -350,3 +382,23 @@ if ( isset( $_POST['create_ticket_nonce'] )
 
   <?php endif; ?>
 </div>
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- jQuery (deja este în WP admin) -->
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Inițializare Select2 -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  jQuery('select.select2').select2({
+    width: 'resolve',
+    placeholder: function() {
+      return jQuery(this).data('placeholder');
+    },
+    allowClear: true
+  });
+});
+</script>

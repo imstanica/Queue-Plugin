@@ -71,9 +71,9 @@ unset( $a );
     <?php wp_nonce_field( 'add_agent_nonce' ); ?>
     <table class="form-table">
       <tr>
-        <th><label for="wp_user_id"><?php esc_html_e( 'WP User', 'queues' ); ?></label></th>
+        <th><label for="wp_user_id"><?php esc_html_e( 'Select existing user', 'queues' ); ?></label></th>
         <td>
-          <select name="wp_user_id" id="wp_user_id" required>
+          <select name="wp_user_id" id="wp_user_id" class="regular-text" style="width: 300px" required>
             <option value=""><?php esc_html_e( '— Select User —', 'queues' ); ?></option>
             <?php foreach ( $wp_users as $u ) : ?>
               <option value="<?php echo esc_attr( $u->ID ); ?>">
@@ -84,7 +84,7 @@ unset( $a );
         </td>
       </tr>
       <tr>
-        <th><?php esc_html_e( 'Assigned Queues', 'queues' ); ?></th>
+        <th><?php esc_html_e( 'Assigned Queues (categories)', 'queues' ); ?></th>
         <td>
           <?php foreach ( $queues as $q ) : ?>
             <label>
@@ -176,3 +176,14 @@ unset( $a );
     </tbody>
   </table>
 </div>
+<!-- Select2 assets -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+jQuery(document).ready(function($) {
+  $('#wp_user_id').select2({
+    placeholder: "<?php esc_attr_e( 'Search user...', 'queues' ); ?>",
+    width: 'resolve'
+  });
+});
+</script>
