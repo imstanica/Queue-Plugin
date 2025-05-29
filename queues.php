@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Queues
  * Description: Simple unified backend ticketing & knowledgebase system for WordPress
- * Version: 1.12
+ * Version: 1.13
  * Author: Marius
  */
 
